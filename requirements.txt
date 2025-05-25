@@ -1,0 +1,26 @@
+# Core data science packages
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+plotly
+
+# Machine Learning
+scikit-learn
+xgboost
+lightgbm
+imbalanced-learn
+
+# Deep Learning
+torch
+torchvision
+
+# Jupyter
+jupyter
+ipykernel
+notebook
+
+# Additional utilities
+tqdm
+joblib
