@@ -970,4 +970,94 @@ def preprocess_eye_tracking_data(
         print(f"   Data retention: {preprocessing_info['retention_rate']:.1f}%")
         print("="*60)
 
+    # Generate and save plots if requested
+    if create_plots:
+        # Import visualization functions
+        from src.visualization import (
+            plot_gaze_trajectory,
+            plot_disparity_analysis,
+            plot_preprocessing_summary,
+            plot_pupil_analysis,
+            plot_preprocessing_pipeline,
+            plot_blink_analysis,
+            plot_saccade_analysis,
+            plot_eye_stabilization_effect,
+            plot_individual_preprocessing_steps
+        )
+        import matplotlib.pyplot as plt
+        
+        # Create subject directory for saving plots
+        figure_dir = 'figures/'  # Default figure directory
+        subject_dir = os.path.join(figure_dir, subject_id)
+        os.makedirs(subject_dir, exist_ok=True)
+        
+        if verbose:
+            print(f"\n🎨 Creating visualization plots...")
+        
+        # 1. Gaze trajectory comparison
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
+        plot_gaze_trajectory(df_original, ax=ax1, title='Before Preprocessing')
+        plot_gaze_trajectory(df, ax=ax2, title='After Preprocessing')
+        plt.suptitle(f'Gaze Trajectory Comparison - Subject {subject_id}')
+        plt.tight_layout()
+        plt.savefig(os.path.join(subject_dir, 'gaze_trajectory_comparison.png'))
+        plt.close()
+        
+        # 2. Disparity analysis
+        fig = plot_disparity_analysis(df)
+        plt.savefig(os.path.join(subject_dir, 'disparity_analysis.png'))
+        plt.close(fig)
+        
+        # 3. Preprocessing summary
+        fig = plot_preprocessing_summary(preprocessing_info)
+        plt.savefig(os.path.join(subject_dir, 'preprocessing_summary.png'))
+        plt.close(fig)
+        
+        # 4. Pupil analysis
+        fig = plot_pupil_analysis(df_original, df)
+        plt.savefig(os.path.join(subject_dir, 'pupil_analysis.png'))
+        plt.close(fig)
+        
+        # 5. Pipeline visualization
+        fig = plot_preprocessing_pipeline(pipeline_stages, pipeline_titles)
+        plt.savefig(os.path.join(subject_dir, 'preprocessing_pipeline.png'))
+        plt.close(fig)
+        
+        # 6. Blink analysis
+        fig = plot_blink_analysis(df)
+        plt.savefig(os.path.join(subject_dir, 'blink_analysis.png'))
+        plt.close(fig)
+        
+        # 7. Saccade analysis
+        fig = plot_saccade_analysis(df)
+        plt.savefig(os.path.join(subject_dir, 'saccade_analysis.png'))
+        plt.close(fig)
+        
+        # 8. Eye stabilization effect
+        fig = plot_eye_stabilization_effect(df_before_stabilization, df)
+        plt.savefig(os.path.join(subject_dir, 'eye_stabilization_effect.png'))
+        plt.close(fig)
+        
+        # 9. Individual preprocessing step plots with quality metrics
+        steps_dir = os.path.join(subject_dir, 'individual_steps_with_quality')
+        os.makedirs(steps_dir, exist_ok=True)
+        individual_figures = plot_individual_preprocessing_steps(
+            pipeline_stages,
+            pipeline_titles,
+            figsize=(14, 10),
+            save_dir=steps_dir
+        )
+        
+        if verbose:
+            print(f"\n📊 Plots saved to: {subject_dir}")
+            print("   - gaze_trajectory_comparison.png")
+            print("   - disparity_analysis.png")
+            print("   - preprocessing_summary.png")
+            print("   - pupil_analysis.png")
+            print("   - preprocessing_pipeline.png")
+            print("   - blink_analysis.png")
+            print("   - saccade_analysis.png")
+            print("   - eye_stabilization_effect.png")
+            print(f"   - individual_steps_with_quality/ ({len(individual_figures)} plots)")
+
     return df, preprocessing_info
